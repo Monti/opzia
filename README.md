@@ -7,28 +7,30 @@ OptionOffer
 // Right now this is a single big contract, probably split it to each token
 // Need to think about maybe price restrictions to the option offerer
 
-contract OptionOffers{ // A token to eth price lock offer
+contract OptionRegistry{// An option registry for a TOKEN/ETH market
 struct OptionOffer{
   uint duration; // Amount of time an option can last
+  uint minDuration; //Amount of time before option can be taken
   uint32 volatility; // The maximal expected change in price within duration in ppm
   uint32 fee; // Percentage of distance between current price and volatility to take as fee in ppm
-  address token; // token locked
+  uint32 percentage; //Percentage of assets this option can lock
   address[] approvedExchanges;
   address owner;
-  mapping(address => uint) approvedAmount; //ppm of total assets approved for this option
+ 
 }
 
 struct PriceLock{
   uint offerIndex;
   uint creation;
+  uint rate; // Locked rate from the other asset to the asset locked 
+  uint amount; // Amount of assets locked
   address taker;
-  bool ethOrToken;
-  uint rate;
-  uint amount; 
+  bool ethOrToken; // whether the lock was on eth or the token
 }
 
-mapping(address=>address=>uint) userTotalBalances
-mapping(address=>address=>uint) userBalances; //holds the user balances
+ERC20 token;
+mapping(address=>uint) userTotalBalances
+mapping(address=>uint) userBalances; //holds the available user balances
 PriceLock[] priceLocks; 
 OptionOffer[] offers;
 mapping(address => uint[]) userToOffers;
