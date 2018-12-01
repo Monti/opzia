@@ -14,7 +14,7 @@ struct OptionOffer{
   uint32 volatility; // The maximal expected change in price within duration in ppm
   uint32 fee; // Percentage of distance between current price and volatility to take as fee in ppm
   uint32 percentage; //Percentage of assets this option can lock
-  address[] approvedExchanges;
+  ExchangeInterface exchange;
   address owner;
  
 }
@@ -37,16 +37,19 @@ mapping(address => uint[]) userToOffers;
 mapping(address => uint[]) userToLocks;
 
 // Locks amountToLock ether at current rate (for duration) and attempts to pull amountToLock*etherRate*volatility*fee
-function lockEtherAtPrice(ExchangeInterface exchange, uint amountToLock, uint offerIndex) public; 
+function lockEtherAtPrice(uint amountToLock, uint offerIndex) public; 
 
 / Locks amountToLock token at current rate (for duration) and validates msg.valud has amountToLock*tokenRate*volatility*fee
-function lockTokenAtPrice(ExchangeInterface exchange, uint amountToLock, uint offerIndex) public; 
+function lockTokenAtPrice(uint amountToLock, uint offerIndex) public; 
 
 // Creates an offer, attempting to pull tokenAmount and msg.value for UX
 function addOffer(...offerParams, uint tokenAmount) payable;
 
 // Sends locked amount to user and takes the assets according ot the original locked rate111
 function takeLock(uint lockIndex) payable;
+
+// Cancel volatile option
+function cancelOption(lockIndex);
 }
 ```
 
