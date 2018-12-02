@@ -175,12 +175,12 @@ const Swap = class SignUpForm extends Component {
           (toToken.symbol == "GO" || fromToken.symbol == "GO") ? (
             <Row>
               <Item>
-                <Link href={{ pathname: '/options', query: { toToken, fromToken, amount } }}><ActionButton variant="contained">Lock Rate This Rate</ActionButton></Link>
+                <Link href={{ pathname: '/options', query: { toToken:toToken.symbol, fromToken:fromToken.symbol, amount } }}><ActionButton variant="contained">Lock Rate This Rate</ActionButton></Link>
               </Item>
             </Row>
-          ) : (
+          ) : 
             ""
-          )}
+          }
           </CardContent>
          
         </Card>

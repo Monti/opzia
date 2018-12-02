@@ -77,6 +77,15 @@ const NavBar = () => (
       <NavbarLink href="/">
         Opzia
       </NavbarLink>
+      <NavbarLink href="/addOption">
+        Add Option Offer
+      </NavbarLink>
+      <NavbarLink href="/myOptions">
+        My Open Offers
+      </NavbarLink>
+      <NavbarLink href="/myLocks">
+        My Purchased Options
+      </NavbarLink>
      
     </NavBarContent>
   </NavbarContainer>
