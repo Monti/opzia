@@ -31,12 +31,12 @@ contract OptionRegistry{// An option registry for a TOKEN/ETH market
     }
 
     IERC20 token;
-    mapping(address=>uint) userEthBalances; //holds the available user balances
-    mapping(address=>uint) userTokenBalances; //holds the available user balances
-    PriceLock[] priceLocks; 
-    OptionOffer[] offers;
-    mapping(address => uint[]) userToOffers;
-    mapping(address => uint[]) userToLocks;
+    mapping(address=>uint) public userEthBalances; //holds the available user balances
+    mapping(address=>uint) public userTokenBalances; //holds the available user balances
+    PriceLock[] public priceLocks; 
+    OptionOffer[] public offers;
+    mapping(address => uint[]) public userToOffers;
+    mapping(address => uint[]) public userToLocks;
 
     constructor(address _token) public{
         token = IERC20(_token);
@@ -252,6 +252,14 @@ contract OptionRegistry{// An option registry for a TOKEN/ETH market
         require(amount<=userEthBalances[msg.sender], "Not enough available assets");
         userEthBalances[msg.sender] -= msg.value; 
         msg.sender.transfer(amount);
+    }
+
+    function getOffersLength() public view returns(uint){
+        return offers.length;
+    }
+
+    function getLocksLength() public view returns(uint){
+        return priceLocks.length;
     }
 
 }
