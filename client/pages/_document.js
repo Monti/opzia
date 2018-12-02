@@ -22,6 +22,10 @@ export default class MyCustomDocument extends Document {
             rel="stylesheet"
           />
           <link
+            href="/static/react-select.css"
+            rel="stylesheet"
+          />
+          <link
             rel="shortcut icon"
             type="image/png"
             href="/static/favicon.png"

@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import "@blueprintjs/core/lib/css/blueprint.css";
-
 import NavBar from "../Navbar/Navbar";
 import { createGlobalStyle } from "styled-components";
+
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -21,7 +20,6 @@ export default class Layout extends Component {
         <GlobalStyle />
         <NavBar />
         {this.props.children}
-
       </React.Fragment>
     );
   }
