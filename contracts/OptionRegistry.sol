@@ -262,4 +262,12 @@ contract OptionRegistry{// An option registry for a TOKEN/ETH market
         return priceLocks.length;
     }
 
+    function getUserOffersLength(address user) public view returns(uint){
+        return userToOffers[user].length;
+    }
+
+    function getUserLocksLength(address user) public view returns(uint){
+        return userToLocks[user].length;
+    }
+
 }
