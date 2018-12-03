@@ -190,6 +190,7 @@ export const loadTokens = () => {
       const symbol = await tokenContract.methods.symbol().call();
       const name = await tokenContract.methods.name().call();
       dispatch(getTokenRegistry(address));
+      dispatch(getTokenExchange(address));
       dispatch(fetchUserStuff(address, accounts[0]));
       dispatch(loadAllOffers(address));
       dispatch({

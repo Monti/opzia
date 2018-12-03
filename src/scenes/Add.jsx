@@ -36,16 +36,6 @@ const Footer = styled.div`
   margin-top: 40px;
 `;
 
-const mainTokens = [
-  {
-    "name": "GoChain",
-    "symbol": "GO"
-  },
-  {
-    "name": "Mock",
-    "symbol": "MCK"
-  },
-];
 
 class Add extends Component {
   constructor(props) {
@@ -55,7 +45,7 @@ class Add extends Component {
       registry: null,
       amountToken: null,
       selectedToken: null,
-
+      goOrToken:true,
       amount: '',
       volatility: '',
       fee: '',
@@ -81,7 +71,7 @@ class Add extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    const { web3, accounts } = this.props;
+    const { web3, accounts, exchanges } = this.props;
     const maxAssets = web3.utils.toWei("5000");
 
     const {
@@ -92,14 +82,33 @@ class Add extends Component {
       fee,
       duration,
       wait,
+      goOrToken,
+      selectedToken
     } = this.state;
+    const value = web3.utils.toWei(amount.toString());
+    if (goOrToken){
+      const tx =  registry.methods.addOffer(
+        [volatility*1000000, fee*1000000],
+        [duration*60*60*24, wait*60*60, value, value],
+        true,
+        exchanges[selectedToken.address]._address);
+      const gas = await tx.estimateGas({from:accounts[0], value});
+      await tx.send({from:accounts[0], value, gas:gas*2})
+    }
+    else{
+      const approveTx = selectedToken.contract.methods.approve(registry._address, value);
+      const approveGas = await approveTx.estimateGas({from:accounts[0]});
+      await approveTx.send({from:accounts[0], gas:approveGas*2})
 
-    let offer = await registry.methods.addOffer(
-      [volatility, fee],
-      [duration, wait, maxAssets, maxAssets],
-      false,
-      { from: accounts[0] }
-    ).call();
+      const tx =  registry.methods.addOffer(
+        [volatility*1000000, fee*1000000],
+        [duration*60*60*24, wait*60*60, value, value],
+        false,
+        exchanges[selectedToken.address]._address);
+      const gas = await tx.estimateGas({from:accounts[0]});
+      await tx.send({from:accounts[0], gas:gas*2})
+    }
+    
 
   }
 
@@ -116,6 +125,7 @@ class Add extends Component {
       fee,
       wait,
       duration,
+      goOrToken
     } = this.state;
 
     const { tokens } = this.props;
@@ -125,12 +135,13 @@ class Add extends Component {
         <form onSubmit={e => this.handleSubmit(e)}>
           <InputGroup>
             <TradeList style={{ marginRight: '20px'}}>
-              {tokens.map(item => (
+              {tokens.filter(token=>token.symbol!="GO").map(item => (
                 <TradeItem
                   item={item}
                   key={item.symbol}
                   selectedItem={amountToken}
-                  handleClick={item => this.handleAmountClick(item)}
+                  handleClick={item => {this.handleAmountClick(item)
+                  this.handleClick(item)}}
                 />
               ))}
             </TradeList>
@@ -177,19 +188,19 @@ class Add extends Component {
             </InputItem>
             <InputItem style={{ display: 'flex' }}>
               <TradeList>
-                {mainTokens.map(item => (
+                
                   <TradeItem
-                    item={item}
-                    key={item.symbol}
-                    selectedItem={selectedToken}
-                    handleClick={this.handleClick}
+                    item={ {name:"Go", symbol:"GO"}}
+                    key={"GO"}
+                    selectedItem={goOrToken? {name:"Go", symbol:"GO"}: {}}
+                    handleClick={()=>this.setState({goOrToken:!goOrToken})}
                   />
-                ))}
+               
               </TradeList>
             </InputItem>
           </InputGroup>
           <Footer>
-            <div>Existing State: 0</div>
+            
             <Button type="button">Add Option</Button>
           </Footer>
         </form>
