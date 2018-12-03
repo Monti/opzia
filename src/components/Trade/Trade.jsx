@@ -6,7 +6,7 @@ import Conversion from '../Conversion';
 import tradeList from './trade-list.json';
 
 const Wrapper = styled.div`
-  margin: 50px 0;
+  margin-bottom: 50px;
 `;
 
 const TradeList = styled.div`
