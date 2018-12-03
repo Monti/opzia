@@ -91,7 +91,7 @@ module.exports = async function(callback) {
       if (
         (await mockTokenRegistry.getUserOffersLength.call(accounts[0])) == 0
       ) {
-        console.log("creating new option");
+        console.log("creating new ether option");
         const volatility = 10 * 1000;
         const fee = 10 * 1000;
         const duration = 60 * 60 * 24 * 3;
@@ -132,7 +132,56 @@ module.exports = async function(callback) {
         console.log(lock);
       } else {
         console.log("already have first lock");
-        let lock = await mockTokenRegistry.priceLock.call(0);
+        let lock = await mockTokenRegistry.priceLocks.call(0);
+        console.log(lock);
+      }
+
+      // Create token option offer
+      let tokenOffer = null;
+      if (
+        (await mockTokenRegistry.getUserOffersLength.call(accounts[0])) == 1
+      ) {
+        console.log("creating new token option offer");
+        const volatility = 8* 1000;
+        const fee = 10 * 1000;
+        const duration = 60 * 60 * 24 * 3;
+        const minDuration = duration / 3;
+        const maxAssets = web3.utils.toWei("5000");
+
+        await mockToken.approve(mockTokenRegistry.address, maxAssets, {from:accounts[0]});
+
+        await mockTokenRegistry.addOffer(
+          [volatility, fee],
+          [duration, minDuration, maxAssets, maxAssets],
+          false,
+          tokenExchange.address,
+          { from: accounts[0] }
+        );
+
+        tokenOffer = await mockTokenRegistry.offers.call(1);
+        console.log(tokenOffer);
+      } else {
+        console.log("already have Second offer");
+        tokenOffer = await mockTokenRegistry.offers.call(1);
+        console.log(tokenOffer);
+      }
+
+      // Create token price lock
+      if ((await mockTokenRegistry.getUserLocksLength.call(accounts[0])) == 1) {
+        console.log("creating new lock");
+        const amountToLock = web3.utils.toWei("400");
+        const feeToSend = web3.utils.toWei("0.1");
+
+        await mockTokenRegistry.lockTokenAtPrice(amountToLock, 1, {
+          from: accounts[0],
+          value: feeToSend
+        });
+
+        let lock = await mockTokenRegistry.priceLocks.call(1);
+        console.log(lock);
+      } else {
+        console.log("already have token lock");
+        let lock = await mockTokenRegistry.priceLocks.call(1);
         console.log(lock);
       }
 

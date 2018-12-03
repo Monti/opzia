@@ -138,9 +138,13 @@ contract OptionRegistry{// An option registry for a TOKEN/ETH market
         userTokenBalances[offer.owner] -= amountToLock;
         offer.assetsLocked += amountToLock;
 
-        require(msg.value>feeToTake, "not enough fees");
+        require(msg.value >= feeToTake, "not enough fees");
 
-        userEthBalances[msg.sender] += msg.value;
+        if (msg.value > feeToTake){
+            msg.sender.transfer(msg.value - feeToTake);
+        }
+
+        userEthBalances[msg.sender] += feeToTake;
 
     }
 
