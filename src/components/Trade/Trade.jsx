@@ -1,8 +1,7 @@
-import React, { Component, Fragment } from 'react';
-import styled from 'styled-components';
-import TradeItem from '../TradeItem';
-import Conversion from '../Conversion';
-
+import React, { Component, Fragment } from "react";
+import styled from "styled-components";
+import TradeItem from "../TradeItem";
+import Conversion from "../Conversion";
 
 const Wrapper = styled.div`
   margin: 50px 0;
@@ -20,50 +19,37 @@ class Trade extends Component {
 
     this.state = {
       from: null,
-      to: null,
+      to: null
     };
-
-    this.selectFrom = this.selectFrom.bind(this);
-    this.selectTo = this.selectTo.bind(this);
-  }
-
-
-  selectFrom(from) {
-    this.setState({ from });
-  }
-
-  selectTo(to) {
-    this.setState({ to });
   }
 
   render() {
-    const { from, to } = this.state;
-    const {tokens, fromAmount, toAmount, fromToken, toToken, onInputChange} = this.props;
+    const { tokens, fromToken, toToken, onInputChange } = this.props;
 
     return (
       <Fragment>
         <Wrapper>
           <Fragment>
             <TradeList>
-              { tokens.map(item => (
+              {tokens.map(item => (
                 <TradeItem
                   item={item}
                   key={item.symbol}
                   selectedItem={fromToken}
-                  handleClick={(item)=>onInputChange("fromToken", item)} />
+                  handleClick={item => onInputChange("fromToken", item)}
+                />
               ))}
             </TradeList>
             <TradeList>
-              { tokens.map(item => (
+              {tokens.map(item => (
                 <TradeItem
                   item={item}
                   key={item.symbol}
                   selectedItem={toToken}
-                  handleClick={(item)=>onInputChange("toToken", item)} />
+                  handleClick={item => onInputChange("toToken", item)}
+                />
               ))}
-
             </TradeList>
-
           </Fragment>
         </Wrapper>
         <Conversion {...this.props} />
@@ -71,5 +57,5 @@ class Trade extends Component {
     );
   }
 }
- 
+
 export default Trade;

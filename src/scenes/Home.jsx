@@ -7,6 +7,12 @@ import { getTokenExchange } from "../actions";
 
 import { connect } from "react-redux";
 
+const initialState = {
+  fromToken: {},
+  toToken: {},
+  fromAmount: 0,
+  toAmount: 0
+};
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -14,18 +20,13 @@ class Home extends Component {
     this.changeInputState = this.changeInputState.bind(this);
     this.fetchTradePrice = this.fetchTradePrice.bind(this);
   }
-  state = {
-    fromToken: {},
-    toToken: {},
-    fromAmount: 0,
-    toAmount: 0
-  };
+  state = initialState;
   changeInputState(name, value) {
     const { fromToken, toToken } = this.state;
     this.setState({ [name]: value });
     if (
       name == "fromAmount" &&
-      Number.isInteger(value) &&
+      Number.isInteger(+value) &&
       fromToken != toToken
     ) {
       this.fetchTradePrice(value);
@@ -61,11 +62,58 @@ class Home extends Component {
     }
   }
 
+  approve = async (token, amount, address, web3, accounts) => {
+    const tx = token.methods.approve(address, web3.utils.toWei(amount));
+
+    let gas = await tx.estimateGas({ from: accounts[0] });
+    let rec = await tx.send({ from: accounts[0], gas });
+    return rec;
+  };
+
   swap = async () => {
     const { fromToken, toToken, fromAmount } = this.state;
-    const { exchanges, web3 } = this.props;
+    const { exchanges, web3, contracts, accounts } = this.props;
 
-    
+    let exchange;
+    if (toToken.symbol == "GO") {
+      exchange = exchanges[fromToken.address];
+      await this.approve(
+        contracts.token,
+        fromAmount,
+        exchange._address,
+        web3,
+        accounts
+      );
+      const tx = exchange.methods.tokenToEthSwapInput(
+        web3.utils.toWei(fromAmount),
+        1,
+        Math.floor(Date.now() / 1000) + 500
+      );
+      const gas = await tx.estimateGas({ from: accounts[0] });
+      console.log(gas);
+      await tx.send({ gas, from: accounts[0] });
+      this.setState(initialState);
+      return;
+    }
+
+    if (fromToken.symbol == "GO") {
+      exchange = exchanges[toToken.address];
+      const tx = exchange.methods.ethToTokenSwapInput(
+        10,
+        Math.floor(Date.now() / 1000) + 500
+      );
+      const gas = await tx.estimateGas({
+        from: accounts[0],
+        value: web3.utils.toWei(fromAmount.toString())
+      });
+      console.log(gas);
+      await tx.send({
+        from: accounts[0],
+        value: web3.utils.toWei(fromAmount.toString()),
+        gas:gas*2
+      });
+      return;
+    }
   };
 
   render() {
@@ -88,6 +136,7 @@ class Home extends Component {
           toToken={toToken}
           tokens={tokens}
           onInputChange={this.changeInputState}
+          onSwap={this.swap}
         />
       </Container>
     );
@@ -97,7 +146,7 @@ class Home extends Component {
 const mapStateToProps = state => {
   const { accounts, exchanges, contracts, web3 } = state;
   return {
-    accounts,
+    accounts: accounts.accounts,
     exchanges,
     contracts,
     web3: web3.web3
