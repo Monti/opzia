@@ -14,7 +14,9 @@ export const loadWeb3 = () => {
       payload: getWeb3()
     }).then(() => {
       dispatch(getAccounts());
-      dispatch(loadContracts());
+      dispatch(loadContracts()).then(() => {
+        dispatch(loadAllOffers()); // So dirty
+      });
     });
   };
 };
@@ -56,13 +58,18 @@ export const loadContracts = () => {
   };
 };
 
-export const getTokenExchange = (tokenAddress) => {
+export const getTokenExchange = tokenAddress => {
   return async (dispatch, getState) => {
     const { web3 } = getState().web3;
     const { uniswapFactory } = getState().contracts;
-    
-    const exchangeAddress = await uniswapFactory.methods.getExchange(tokenAddress).call();
-    const exchange = new web3.eth.Contract(UniswapExchange.abi, exchangeAddress)
+
+    const exchangeAddress = await uniswapFactory.methods
+      .getExchange(tokenAddress)
+      .call();
+    const exchange = new web3.eth.Contract(
+      UniswapExchange.abi,
+      exchangeAddress
+    );
     return dispatch({
       type: "FETCHED_TOKEN_EXCHANGE",
       payload: {
@@ -73,22 +80,52 @@ export const getTokenExchange = (tokenAddress) => {
   };
 };
 
-export const fetchUserOptions = (userAddress) => {
+export const fetchUserOptions = userAddress => {
   return async (dispatch, getState) => {
     const { web3 } = getState().web3;
     const { optionFactory, token } = getState().contracts;
-    
-    const registryAddress = await optionFactory.methods.tokenToRegistry(token._address).call();
+
+    const registryAddress = await optionFactory.methods
+      .tokenToRegistry(token._address)
+      .call();
     const registry = new web3.eth.Contract(OpziaRegistry.abi, registryAddress);
-    const length = await registry.methods.getUserOffersLength(userAddress).call();
-    for (let i =0; i<length;i++){
-      let offerIndex = await registry.methods.userToOffers(userAddress, i).call();
+    const length = await registry.methods
+      .getUserOffersLength(userAddress)
+      .call();
+    for (let i = 0; i < length; i++) {
+      let offerIndex = await registry.methods
+        .userToOffers(userAddress, i)
+        .call();
       let offer = await registry.methods.offers(offerIndex).call();
-      
+
       dispatch({
         type: "FETCHED_USER_OFFER",
         payload: {
-          index:i,
+          index: i,
+          offer
+        }
+      });
+    }
+  };
+};
+
+export const loadAllOffers = () => {
+  return async (dispatch, getState) => {
+    const { web3 } = getState().web3;
+    const { optionFactory, token } = getState().contracts;
+
+    const registryAddress = await optionFactory.methods
+      .tokenToRegistry(token._address)
+      .call();
+    const registry = new web3.eth.Contract(OpziaRegistry.abi, registryAddress);
+    const length = await registry.methods.getOffersLength().call();
+    for (let i = 0; i < length; i++) {
+      let offer = await registry.methods.offers(i).call();
+
+      dispatch({
+        type: "FETCHED_OFFER",
+        payload: {
+          index: i,
           offer
         }
       });

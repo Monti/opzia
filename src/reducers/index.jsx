@@ -6,6 +6,7 @@ import accounts from './accounts';
 import contracts from './contracts';
 import exchanges from './exchanges';
 import user from './user';
+import offers from './offers';
 
 export default (history) => combineReducers({
   router: connectRouter(history),
@@ -13,5 +14,6 @@ export default (history) => combineReducers({
   accounts,
   contracts,
   exchanges,
-  user
+  user,
+  offers
 });

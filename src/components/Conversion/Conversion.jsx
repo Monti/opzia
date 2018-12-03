@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import styled from "styled-components";
 import TextInput from "../TextInput";
 import Button from "../Button";
+import { NavLink } from "react-router-dom";
 
 const Footer = styled.div`
   display: flex;
@@ -37,27 +38,37 @@ class Conversion extends Component {
       onSwap,
       onLock,
       toAmount,
-      
+
       fromAmount,
-      onInputChange,
+      onInputChange
     } = this.props;
+
+    const allSelected = fromAmount > 0 && toToken != {} && fromToken != {};
 
     return (
       <Wrapper>
         <Styledlabel>from</Styledlabel>
         <TextInput
           value={fromAmount}
-          onChange={(e)=>onInputChange("fromAmount", e.target.value)}
+          onChange={e => onInputChange("fromAmount", e.target.value)}
           addon={fromToken}
         />
         <Styledlabel>to</Styledlabel>
-        <TextInput disabled  value={toAmount} addon={toToken} />
-        <Footer>
-          <Button onClick={() => onSwap()}>Swap</Button>
-          <Button onClick={() => onLock()} secondary>
-            Lock in this rate
-          </Button>
-        </Footer>
+        <TextInput disabled value={toAmount} addon={toToken} />
+        {allSelected ? (
+          <Footer>
+            <Button onClick={() => onSwap()}>Swap</Button>
+            <NavLink
+              to={`/take/${fromToken.symbol}/${toToken.symbol}/${fromAmount}/${toAmount}`}
+            >
+              <Button onClick={() => {}} secondary>
+                Lock in this rate
+              </Button>
+            </NavLink>
+          </Footer>
+        ) : (
+          ""
+        )}
       </Wrapper>
     );
   }
