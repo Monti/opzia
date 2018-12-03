@@ -98,7 +98,7 @@ class OpenOffers extends Component {
           dataSource={offers}
           render={source => {
             console.log(fromAmount);
-            const curr = source.ethOrToken ? "GO" : "MCK";
+            const curr = to;
             const days = source.duration / (60 * 60 * 24);
             const fees =
               (source.volatility * +source.fee * +fromAmount) / 1000000 ** 2;
@@ -118,7 +118,8 @@ class OpenOffers extends Component {
                         source.index,
                         toAmount,
                         fees,
-                        source.ethOrToken
+                        source.ethOrToken,
+                        to =="GO"? from: to
                       )
                     }
                   >

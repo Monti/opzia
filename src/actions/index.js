@@ -177,7 +177,7 @@ export const loadTokens = () => {
           contract: tokenContract,
           name,
           symbol,
-          address: tokenAddresses
+          address
         }
       });
     });
