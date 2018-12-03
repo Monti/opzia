@@ -15,6 +15,7 @@ const Item = styled.div`
   justify-content: center;
   margin: 1px;
   width: 57px;
+  text-transform: lowercase;
   transition: all 0.09s ease-in;
 
   &:hover {

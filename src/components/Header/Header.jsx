@@ -45,6 +45,11 @@ const Title = styled.div`
     margin-left: 5px;
     width: 5px;
   }
+
+  &:hover::after {
+    position: relative;
+    top: -8px;
+  }
 `;
 
 const Menu = styled.div`

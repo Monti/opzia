@@ -246,10 +246,10 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x070EceA59F0Aa2Ad94Dc3889E480591E59ab226B",
-      "transactionHash": "0x86ec553843445b433de63a90b2ce69561d41d298c4ef3ca5467e595dfeca8594"
+      "address": "0x1d97500682d0cae1f7c766ee8a0851fb6f40e19d",
+      "transactionHash": "0x49eb0c006aa6e6fcad67186153e7b6018e48468da8076ba228dee80748c4e416"
     }
   },
-  "schemaVersion": "3.0.0-beta.2",
-  "updatedAt": "2018-12-03T15:22:50.707Z"
+  "schemaVersion": "2.0.1",
+  "updatedAt": "2018-12-03T19:39:36.829Z"
 }

@@ -1,21 +1,23 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
   display: flex;
-  margin-bottom: 10px;
+  margin: 1px;
   width: 100%;
 `;
 
 const StyledTextInput = styled.input`
   background-color: #F5F6F8;
   border: none;
-  padding: 16px;
+  height: 57px;
+  font-size: 0.9em;
+  padding: 12px;
   width: 100%;
   text-align: right;
 `;
 
-const StyledLabel = styled.label`
+const Addon = styled.label`
   align-items: center;
   background: #1fa888;
   color: #fff;
@@ -25,7 +27,12 @@ const StyledLabel = styled.label`
   font-weight: 700;
   justify-content: center;
   margin-left: 2px;
+  text-transform: lowercase;
   width: 70px;
+`;
+
+const StyledLabel = styled.label`
+  width: 100%;
 `;
 
 class TextInput extends Component {
@@ -34,13 +41,20 @@ class TextInput extends Component {
     this.state = {  }
   }
   render() { 
-    const { addon, disabled, value, onChange } = this.props;
-    const label = addon ? addon.symbol : '?';
+    const { noAddon, addon, disabled, value, onChange, placeholder } = this.props;
+    const addonLabel = addon ? addon.symbol : '?';
 
     return (
       <Wrapper>
-        <StyledTextInput disabled={disabled} type="text" value={value} onChange={onChange} placeholder="Amount" />
-        <StyledLabel>{ label }</StyledLabel>
+        <StyledTextInput
+          disabled={disabled}
+          type="text"
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder} />
+        { !noAddon &&
+          <Addon>{ addonLabel }</Addon>
+        }
       </Wrapper>
     );
   }

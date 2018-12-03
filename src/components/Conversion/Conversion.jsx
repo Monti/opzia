@@ -46,12 +46,13 @@ class Conversion extends Component {
       <Wrapper>
         <Styledlabel>from</Styledlabel>
         <TextInput
+          placeholder="Amount"
           value={fromAmount}
           onChange={(e)=>onInputChange("fromAmount", e.target.value)}
           addon={fromToken}
         />
         <Styledlabel>to</Styledlabel>
-        <TextInput disabled  value={toAmount} addon={toToken} />
+        <TextInput disabled  value={toAmount} addon={toToken} placeholder="Amount" />
         <Footer>
           <Button onClick={() => onSwap()}>Swap</Button>
           <Button onClick={() => onLock()} secondary>

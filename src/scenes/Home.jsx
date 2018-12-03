@@ -44,6 +44,7 @@ class Home extends Component {
       const price = await exchange.methods
         .getEthToTokenInputPrice(web3.utils.toWei(amount.toString()))
         .call();
+      console.log(price)
       this.setState({ toAmount: web3.utils.fromWei(price) });
       return;
     } else if (toToken.symbol == "GO") {

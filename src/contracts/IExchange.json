@@ -77,9 +77,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.4.24;\n\n/**\n@title Exchange interface that must be implemented by any exchange used. Either directly or through a intermediary contract\n@author Yoni Svechinsky\n */\ninterface IExchange{\n\n    /**\n    @dev Returns worst case amount for conversion\n    @param src Address of source erc20 token\n    @param srcAmount Amount of src tokens\n    @param dest Destination token address\n    @return Worst rate converted amount \n     */\n    function getReturn(address src, uint srcAmount, address dest) external view\n        returns (uint wrostCaseRetrun);\n\n\n     /**\n    @dev Trades from src to dest returning sending at most maxDestAmount to recepient and returnin the rest to the sender\n    @param src Address of source erc20 token\n    @param srcAmount Amount of src tokens\n    @param dest Destination token address\n    @param maxDestAmount Maximum amount of dest tokens to convert to\n    @param recepient Address to send dest tokens to\n    @return A tuple of the converted amount and remainder\n     */\n    function tradeExactly(address src, uint srcAmount, address dest, uint maxDestAmount, address recepient, uint minRate) external returns(uint convertedAmount, uint remainder);\n}",
-  "sourcePath": "/home/yoni/Devel/opzia/contracts/Exchange/IExchange.1.sol",
+  "sourcePath": "/Users/kenneth/Projects/monti/contracts/Exchange/IExchange.1.sol",
   "ast": {
-    "absolutePath": "/home/yoni/Devel/opzia/contracts/Exchange/IExchange.1.sol",
+    "absolutePath": "/Users/kenneth/Projects/monti/contracts/Exchange/IExchange.1.sol",
     "exportedSymbols": {
       "IExchange": [
         32
@@ -494,7 +494,7 @@
     "src": "0:1188:0"
   },
   "legacyAST": {
-    "absolutePath": "/home/yoni/Devel/opzia/contracts/Exchange/IExchange.1.sol",
+    "absolutePath": "/Users/kenneth/Projects/monti/contracts/Exchange/IExchange.1.sol",
     "exportedSymbols": {
       "IExchange": [
         32
@@ -913,35 +913,6 @@
     "version": "0.4.24+commit.e67f0147.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.0.0-beta.2",
-  "updatedAt": "2018-12-03T15:22:49.867Z",
-  "devdoc": {
-    "author": "Yoni Svechinsky",
-    "methods": {
-      "getReturn(address,uint256,address)": {
-        "details": "Returns worst case amount for conversion",
-        "params": {
-          "dest": "Destination token address",
-          "src": "Address of source erc20 token",
-          "srcAmount": "Amount of src tokens"
-        },
-        "return": "Worst rate converted amount "
-      },
-      "tradeExactly(address,uint256,address,uint256,address,uint256)": {
-        "details": "Trades from src to dest returning sending at most maxDestAmount to recepient and returnin the rest to the sender",
-        "params": {
-          "dest": "Destination token address",
-          "maxDestAmount": "Maximum amount of dest tokens to convert to",
-          "recepient": "Address to send dest tokens to",
-          "src": "Address of source erc20 token",
-          "srcAmount": "Amount of src tokens"
-        },
-        "return": "A tuple of the converted amount and remainder"
-      }
-    },
-    "title": "Exchange interface that must be implemented by any exchange used. Either directly or through a intermediary contract"
-  },
-  "userdoc": {
-    "methods": {}
-  }
+  "schemaVersion": "2.0.1",
+  "updatedAt": "2018-12-03T19:39:35.801Z"
 }
