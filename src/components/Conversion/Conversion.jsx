@@ -1,7 +1,7 @@
-import React, { Component, Fragment } from 'react';
-import styled from 'styled-components';
-import TextInput from '../TextInput';
-import Button from '../Button';
+import React, { Component, Fragment } from "react";
+import styled from "styled-components";
+import TextInput from "../TextInput";
+import Button from "../Button";
 
 const Footer = styled.div`
   display: flex;
@@ -23,24 +23,44 @@ const Styledlabel = styled.div`
 class Conversion extends Component {
   constructor(props) {
     super(props);
-    this.state = {  }
   }
-  render() { 
-    const { from, to } = this.props;
+
+  changeFromAmount(e) {
+    const fromAmount = e.target.value;
+    this.setState({ fromAmount });
+  }
+
+  render() {
+    const {
+      fromToken,
+      toToken,
+      onSwap,
+      onLock,
+      toAmount,
+      
+      fromAmount,
+      onInputChange,
+    } = this.props;
 
     return (
       <Wrapper>
         <Styledlabel>from</Styledlabel>
-        <TextInput addon={from} />
+        <TextInput
+          value={fromAmount}
+          onChange={(e)=>onInputChange("fromAmount", e.target.value)}
+          addon={fromToken}
+        />
         <Styledlabel>to</Styledlabel>
-        <TextInput addon={to} />
+        <TextInput disabled  value={toAmount} addon={toToken} />
         <Footer>
-          <Button>Swap</Button>
-          <Button secondary>Lock in this rate</Button>
+          <Button onClick={() => onSwap()}>Swap</Button>
+          <Button onClick={() => onLock()} secondary>
+            Lock in this rate
+          </Button>
         </Footer>
       </Wrapper>
     );
   }
 }
- 
+
 export default Conversion;

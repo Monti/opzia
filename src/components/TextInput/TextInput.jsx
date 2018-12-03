@@ -34,12 +34,12 @@ class TextInput extends Component {
     this.state = {  }
   }
   render() { 
-    const { addon } = this.props;
+    const { addon, disabled, value, onChange } = this.props;
     const label = addon ? addon.symbol : '?';
 
     return (
       <Wrapper>
-        <StyledTextInput type="text" value="33.02938" placeholder="Amount" />
+        <StyledTextInput disabled={disabled} type="text" value={value} onChange={onChange} placeholder="Amount" />
         <StyledLabel>{ label }</StyledLabel>
       </Wrapper>
     );

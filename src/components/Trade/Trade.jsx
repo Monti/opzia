@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import TradeItem from '../TradeItem';
 import Conversion from '../Conversion';
 
-import tradeList from './trade-list.json';
 
 const Wrapper = styled.div`
   margin-bottom: 50px;
@@ -39,34 +38,35 @@ class Trade extends Component {
 
   render() {
     const { from, to } = this.state;
+    const {tokens, fromAmount, toAmount, fromToken, toToken, onInputChange} = this.props;
 
     return (
       <Fragment>
         <Wrapper>
           <Fragment>
             <TradeList>
-              { tradeList.map(item => (
+              { tokens.map(item => (
                 <TradeItem
                   item={item}
                   key={item.symbol}
-                  selectedItem={from}
-                  handleClick={this.selectFrom} />
+                  selectedItem={fromToken}
+                  handleClick={(item)=>onInputChange("fromToken", item)} />
               ))}
             </TradeList>
             <TradeList>
-              { tradeList.map(item => (
+              { tokens.map(item => (
                 <TradeItem
                   item={item}
                   key={item.symbol}
-                  selectedItem={to}
-                  handleClick={this.selectTo} />
+                  selectedItem={toToken}
+                  handleClick={(item)=>onInputChange("toToken", item)} />
               ))}
 
             </TradeList>
 
           </Fragment>
         </Wrapper>
-        <Conversion {...this.state} />
+        <Conversion {...this.props} />
       </Fragment>
     );
   }
