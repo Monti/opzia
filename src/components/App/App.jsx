@@ -7,8 +7,8 @@ import Header from '../Header';
 import Home from '../../scenes/Home';
 import Add from '../../scenes/Add';
 import OpenOffers from '../../scenes/OpenOffers';
-import PurchasedOffers from '../../scenes/PurchasedOffers';
 import TakeOffer from '../../scenes/TakeOffer';
+import PurchasedOptions from '../../scenes/PurchasedOptions';
 
 const ONE_SECOND = 1000;
 
@@ -79,7 +79,7 @@ class App extends Component {
               <Route path="/add" exact component={Add} />
               <Route path="/take/:from/:to/:fromAmount/:toAmount" component={TakeOffer} />
               <Route path="/open-offers" exact component={OpenOffers} />
-              <Route path="/purchased-offers" exact component={PurchasedOffers} />
+              <Route path="/purchased-offers" exact component={PurchasedOptions} />
 
             </Fragment>
           }

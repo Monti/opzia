@@ -86,10 +86,19 @@ class OpenOffers extends Component {
   };
 
   render() {
-    const { web3, rawOffers, match } = this.props;
+    const { web3, rawOffers, match, tokens } = this.props;
     const { from, to, fromAmount, toAmount } = match.params;
     const goOrToken = to == "GO" ? true : false;
-    const offers = Object.values(rawOffers)
+    const token = goOrToken
+      ? tokens.find(token => token.symbol == from)
+      : tokens.find(token => token.symbol == to);
+    if (!token){
+      return <div>LOADING</div>
+    }
+    if (!rawOffers[token.address]){
+      return <data>LOADING</data>
+    }
+    const offers = Object.values(rawOffers[token.address])
       .map((val, idx) => {
         val["index"] = idx;
         return val;

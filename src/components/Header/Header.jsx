@@ -107,7 +107,7 @@ class Header extends Component {
             <Menu>
               <NavLink to="/add">Add Option Offer</NavLink>
               <NavLink to="/open-offers">Open Offers</NavLink>
-              <NavLink to="/purchased-offers">Purchased Offers</NavLink>
+              <NavLink to="/purchased-options">Purchased Options</NavLink>
             </Menu>
           </Wrapper>
         </Container>
