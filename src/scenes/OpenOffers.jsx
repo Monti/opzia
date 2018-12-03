@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import _ from 'lodash';
 
 import Container from "../components/Container";
 import Table from "../components/Table";
@@ -50,7 +51,7 @@ class OpenOffers extends Component {
             const curr =source.ethOrToken? "GO" :"MCK";
             const days = source.duration/(60*60*24);
             return (
-              <tr key={source.fee}>
+              <tr key={_.uniqueId()}>
                 <td>{curr}</td>
                 <td>{`${source.volatility/1000} %`}</td>
                 <td>{`${source.fee/1000} %`}</td>
