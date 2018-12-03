@@ -8,6 +8,7 @@ import Home from '../../scenes/Home';
 import Add from '../../scenes/Add';
 import OpenOffers from '../../scenes/OpenOffers';
 import PurchasedOffers from '../../scenes/PurchasedOffers';
+import TakeOffer from '../../scenes/TakeOffer';
 
 const ONE_SECOND = 1000;
 
@@ -76,6 +77,7 @@ class App extends Component {
 
             <Route path="/" exact component={Home} />
             <Route path="/add" exact component={Add} />
+            <Route path="/take/:from/:to/:fromAmount/:toAmount" component={TakeOffer} />
             <Route path="/open-offers" exact component={OpenOffers} />
             <Route path="/purchased-offers" exact component={PurchasedOffers} />
 

@@ -5,6 +5,7 @@ import Table from "../components/Table";
 
 import { connect } from "react-redux";
 import { fetchUserOptions } from "../actions";
+import Button from "../components/Button";
 
 const columns = [
   {
@@ -31,6 +32,11 @@ const columns = [
     title: "Maximal Assets Locked",
     dataIndex: "maxAssets",
     key: "maxAssets"
+  },
+  {
+    title: "Take",
+    dataIndex: "take",
+    key: "take"
   }
 ];
 
@@ -39,23 +45,39 @@ class OpenOffers extends Component {
     this.props.fetchUserOptions(this.props.accounts[0]);
   }
   render() {
-    const { web3, user } = this.props;
-    const offers = user.offers;
+    const { web3, rawOffers, match } = this.props;
+    const { from, to, fromAmount, toAmount } = match.params;
+    const goOrToken = to == "GO" ? true : false;
+    const offers = Object.values(rawOffers)
+      .map((val, idx) => {
+        val["index"] = idx;
+        return val;
+      })
+      .filter(val => val.ethOrToken == goOrToken);
+
     return (
       <Container>
         <Table
           columns={columns}
           dataSource={offers}
           render={source => {
-            const curr =source.ethOrToken? "GO" :"MCK";
-            const days = source.duration/(60*60*24);
+            console.log(fromAmount);
+            const curr = source.ethOrToken ? "GO" : "MCK";
+            const days = source.duration / (60 * 60 * 24);
+            const fees =
+              (source.volatility * +source.fee * +fromAmount) / 1000000 ** 2;
             return (
               <tr key={source.fee}>
                 <td>{curr}</td>
-                <td>{`${source.volatility/1000} %`}</td>
-                <td>{`${source.fee/1000} %`}</td>
+                <td>{`${source.volatility / 1000} %`}</td>
+                <td>{`${fees} ${from}`}</td>
                 <td>{`${days} Days`}</td>
-                <td>{`${web3.utils.fromWei(source.maxAssetsLocked)} ${curr}`}</td>
+                <td>{`${web3.utils.fromWei(
+                  source.maxAssetsLocked
+                )} ${curr}`}</td>
+                <td>
+                  <Button>Take</Button>
+                </td>
               </tr>
             );
           }}
@@ -72,13 +94,13 @@ const mapDispatchToProps = dispatch => {
 };
 
 const mapStateToProps = state => {
-  const { accounts, exchanges, contracts, web3, user } = state;
+  const { accounts, exchanges, contracts, web3, offers } = state;
   return {
     accounts: accounts.accounts,
     exchanges,
     contracts,
     web3: web3.web3,
-    user
+    rawOffers: offers
   };
 };
 
