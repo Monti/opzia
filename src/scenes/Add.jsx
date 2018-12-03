@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import styled from "styled-components";
+import { connect } from "react-redux";
 
 import TradeItem from '../components/TradeItem';
 import Container from '../components/Container';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
+
+import { getTokenExchange } from "../actions";
 
 const TradeList = styled.div`
   display: flex;
@@ -33,29 +36,6 @@ const Footer = styled.div`
   margin-top: 40px;
 `;
 
-const tokens = [
-  {
-    "name": "GoChain",
-    "symbol": "GO"
-  },
-  {
-    "name": "Mock",
-    "symbol": "MCK"
-  },
-  {
-    "name": "Test",
-    "symbol": "tst"
-  },
-  {
-    "name": "Coin",
-    "symbol": "Coi"
-  },
-  {
-    "name": "Bitcoin",
-    "symbol": "btc",
-  }
-];
-
 const mainTokens = [
   {
     "name": "GoChain",
@@ -72,8 +52,10 @@ class Add extends Component {
     super(props);
 
     this.state = {
-      amountToken: '',
-      selectedToken: '',
+      registry: null,
+      amountToken: null,
+      selectedToken: null,
+
       amount: '',
       volatility: '',
       fee: '',
@@ -86,17 +68,39 @@ class Add extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleAmountClick(token) {
-    this.setState({ amountToken: token });
+  handleAmountClick = async (token) => {
+    const { registries } = this.props;
+    const registry = registries[token.address];
+
+    this.setState({ amountToken: token, registry });
   }
 
   handleClick(token) {
     this.setState({ selectedToken: token });
   }
 
-  handleSubmit(e) {
+  handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(this.state);
+    const { web3, accounts } = this.props;
+    const maxAssets = web3.utils.toWei("5000");
+
+    const {
+      amountToken,
+      registry,
+      amount,
+      volatility,
+      fee,
+      duration,
+      wait,
+    } = this.state;
+
+    let offer = await registry.methods.addOffer(
+      [volatility, fee],
+      [duration, wait, maxAssets, maxAssets],
+      false,
+      { from: accounts[0] }
+    ).call();
+
   }
 
   onChange(type, amount) {
@@ -114,9 +118,11 @@ class Add extends Component {
       duration,
     } = this.state;
 
+    const { tokens } = this.props;
+
     return (
       <Container>
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={e => this.handleSubmit(e)}>
           <InputGroup>
             <TradeList style={{ marginRight: '20px'}}>
               {tokens.map(item => (
@@ -124,7 +130,7 @@ class Add extends Component {
                   item={item}
                   key={item.symbol}
                   selectedItem={amountToken}
-                  handleClick={this.handleAmountClick}
+                  handleClick={item => this.handleAmountClick(item)}
                 />
               ))}
             </TradeList>
@@ -184,7 +190,7 @@ class Add extends Component {
           </InputGroup>
           <Footer>
             <div>Existing State: 0</div>
-            <Button type="submit" onClick={() => {}}>Add Option</Button>
+            <Button type="button">Add Option</Button>
           </Footer>
         </form>
       </Container>
@@ -192,4 +198,25 @@ class Add extends Component {
   }
 }
  
-export default Add;
+const mapStateToProps = state => {
+  const { accounts, exchanges, contracts, web3, tokens, registries } = state;
+  return {
+    accounts: accounts.accounts,
+    exchanges,
+    contracts,
+    registries,
+    web3:  web3.web3,
+    tokens
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getExchange: async token => dispatch(getTokenExchange(token))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Add);

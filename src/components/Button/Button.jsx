@@ -21,7 +21,10 @@ class Button extends Component {
   }
 
   handleClick() {
-    this.props.onClick();
+    const { onClick } = this.props;
+    if (onClick) {
+      this.props.onClick();
+    }
   }
 
   render() {

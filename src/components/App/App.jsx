@@ -71,18 +71,18 @@ class App extends Component {
       <Router>
         <Fragment>
 
-        { finishedLoading &&
-          <Fragment>
-            <Header />
+          { finishedLoading &&
+            <Fragment>
+              <Header />
 
-            <Route path="/" exact component={Home} />
-            <Route path="/add" exact component={Add} />
-            <Route path="/take/:from/:to/:fromAmount/:toAmount" component={TakeOffer} />
-            <Route path="/open-offers" exact component={OpenOffers} />
-            <Route path="/purchased-offers" exact component={PurchasedOffers} />
+              <Route path="/" exact component={Home} />
+              <Route path="/add" exact component={Add} />
+              <Route path="/take/:from/:to/:fromAmount/:toAmount" component={TakeOffer} />
+              <Route path="/open-offers" exact component={OpenOffers} />
+              <Route path="/purchased-offers" exact component={PurchasedOffers} />
 
-          </Fragment>
-        }
+            </Fragment>
+          }
 
           <GlobalStyle />
         </Fragment>
