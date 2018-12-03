@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import Container from '../Container';
 
@@ -69,6 +69,7 @@ const Menu = styled.div`
       top: 0;
     }
 
+    &.active::after,
     &:hover::after {
       background: rgb(0, 224, 142);
     }
@@ -94,13 +95,13 @@ class Header extends Component {
           <Wrapper>
             <Title>
               <h1>
-                <Link to="/">Opzia</Link>
+                <NavLink to="/">Opzia</NavLink>
               </h1>
             </Title>
             <Menu>
-              <Link to="/add">Add Option Offer</Link>
-              <Link to="/open-offers">Open Offers</Link>
-              <Link to="/purchased-offers">Purchased Offers</Link>
+              <NavLink to="/add">Add Option Offer</NavLink>
+              <NavLink to="/open-offers">Open Offers</NavLink>
+              <NavLink to="/purchased-offers">Purchased Offers</NavLink>
             </Menu>
           </Wrapper>
         </Container>

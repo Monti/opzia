@@ -5,6 +5,8 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import Header from '../Header';
 
 import Home from '../../scenes/Home';
+import OpenOffers from '../../scenes/OpenOffers';
+import PurchasedOffers from '../../scenes/PurchasedOffers';
 
 const ONE_SECOND = 1000;
 
@@ -66,6 +68,8 @@ class App extends Component {
             <Header />
 
             <Route path="/" exact component={Home} />
+            <Route path="/open-offers" exact component={OpenOffers} />
+            <Route path="/purchased-offers" exact component={PurchasedOffers} />
 
           </Fragment>
         }
