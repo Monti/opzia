@@ -79,7 +79,7 @@ class Home extends Component {
     if (toToken.symbol == "GO") {
       exchange = exchanges[fromToken.address];
       await this.approve(
-        contracts.token,
+        fromToken.contract,
         fromAmount,
         exchange._address,
         web3,

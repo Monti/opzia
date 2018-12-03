@@ -35,10 +35,7 @@ export const getAccounts = () => {
 export const loadContracts = () => {
   return async (dispatch, getState) => {
     const { web3 } = getState().web3;
-    const tokenContract = new web3.eth.Contract(
-      MockToken.abi,
-      MockToken.networks[5777].address
-    );
+    
     const optionFactory = new web3.eth.Contract(
       OpziaFactory.abi,
       OpziaFactory.networks[5777].address
@@ -50,7 +47,7 @@ export const loadContracts = () => {
     return dispatch({
       type: "LOAD_CONTRACTS",
       payload: {
-        token: tokenContract,
+        
         optionFactory,
         uniswapFactory
       }
@@ -170,7 +167,11 @@ export const loadAllOffers = tokenAddress => {
   };
 };
 
-const tokenAddresses = [MockToken.networks[5777].address];
+const tokenAddresses = [
+  "0x71239FEe0b29937f37a8484aE375F0b7a05564A1",
+  "0x456a919D4E1A70ec66f257c8395E73fc4053FD65",
+  "0xD22eAc93e95F5c6C94a35F102137f36ba01E4eB9"
+];
 export const loadTokens = () => {
   return async (dispatch, getState) => {
     dispatch({
