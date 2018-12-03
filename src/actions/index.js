@@ -11,7 +11,7 @@ export const loadWeb3 = () => {
   return dispatch => {
     return dispatch({
       type: "WEB3_INITIALIZED",
-      payload: getWeb3
+      payload: getWeb3()
     }).then(() => {
       dispatch(getAccounts());
       dispatch(loadContracts());
