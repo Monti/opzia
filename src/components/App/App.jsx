@@ -46,7 +46,7 @@ class App extends Component {
   }
 
   componentWillReceiveProps({ web3 }) {
-    console.log(web3)
+
     this.setState({ web3 });
   }
 
@@ -58,7 +58,8 @@ class App extends Component {
 
   render() {
     const { web3 } = this.state;
-    const finishedLoading = !web3.isLoading;
+    const {accounts} = this.props;
+    const finishedLoading = !web3.isLoading && accounts.accountChanged;
 
     return (
       <Router>

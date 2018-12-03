@@ -3,6 +3,7 @@ import getWeb3 from "../utils/getWeb3";
 var MockToken = require("../contracts/MockToken.json");
 var UniswapFactory = require("../contracts/uniswap_factory.json");
 var OpziaFactory = require("../contracts/OptionRegistryFactory.json");
+var OpziaRegistry = require("../contracts/OptionRegistry.json");
 
 var UniswapExchange = require("../contracts/uniswap_exchange.json");
 
@@ -69,5 +70,28 @@ export const getTokenExchange = (tokenAddress) => {
         exchange
       }
     });
+  };
+};
+
+export const fetchUserOptions = (userAddress) => {
+  return async (dispatch, getState) => {
+    const { web3 } = getState().web3;
+    const { optionFactory, token } = getState().contracts;
+    
+    const registryAddress = await optionFactory.methods.tokenToRegistry(token._address).call();
+    const registry = new web3.eth.Contract(OpziaRegistry.abi, registryAddress);
+    const length = await registry.methods.getUserOffersLength(userAddress).call();
+    for (let i =0; i<length;i++){
+      let offerIndex = await registry.methods.userToOffers(userAddress, i).call();
+      let offer = await registry.methods.offers(offerIndex).call();
+      
+      dispatch({
+        type: "FETCHED_USER_OFFER",
+        payload: {
+          index:i,
+          offer
+        }
+      });
+    }
   };
 };
