@@ -13,9 +13,10 @@ export const loadWeb3 = () => {
       type: "WEB3_INITIALIZED",
       payload: getWeb3()
     }).then(() => {
-      dispatch(getAccounts());
-      dispatch(loadTokens());
-      dispatch(loadContracts())
+      dispatch(getAccounts()).then(() => {
+        dispatch(loadTokens());
+        dispatch(loadContracts());
+      });
     });
   };
 };
@@ -81,10 +82,9 @@ export const getTokenExchange = tokenAddress => {
 
 export const getTokenRegistry = tokenAddress => {
   return async (dispatch, getState) => {
-    
     const { web3 } = getState().web3;
     const { optionFactory } = getState().contracts;
-    
+
     const registryAddress = await optionFactory.methods
       .tokenToRegistry(tokenAddress)
       .call();
@@ -99,13 +99,13 @@ export const getTokenRegistry = tokenAddress => {
   };
 };
 
-export const fetchUserOptions = userAddress => {
+export const fetchUserStuff = (tokenAddress, userAddress) => {
   return async (dispatch, getState) => {
     const { web3 } = getState().web3;
-    const { optionFactory, token } = getState().contracts;
+    const { optionFactory } = getState().contracts;
 
     const registryAddress = await optionFactory.methods
-      .tokenToRegistry(token._address)
+      .tokenToRegistry(tokenAddress)
       .call();
     const registry = new web3.eth.Contract(OpziaRegistry.abi, registryAddress);
     const length = await registry.methods
@@ -117,18 +117,34 @@ export const fetchUserOptions = userAddress => {
         .call();
       let offer = await registry.methods.offers(offerIndex).call();
 
+      offer["tokenAddress"] = tokenAddress;
+      offer["index"] = i;
       dispatch({
         type: "FETCHED_USER_OFFER",
         payload: {
-          index: i,
           offer
+        }
+      });
+    }
+    const lockLength = await registry.methods
+      .getUserLocksLength(userAddress)
+      .call();
+    for (let i = 0; i < lockLength; i++) {
+      let lockIndex = await registry.methods.userToLocks(userAddress, i).call();
+      let lock = await registry.methods.priceLocks(lockIndex).call();
+      lock["index"] = i;
+      lock["tokenAddress"] = tokenAddress;
+      dispatch({
+        type: "FETCHED_USER_LOCK",
+        payload: {
+          lock
         }
       });
     }
   };
 };
 
-export const loadAllOffers = (tokenAddress) => {
+export const loadAllOffers = tokenAddress => {
   return async (dispatch, getState) => {
     console.log(tokenAddress);
     const { web3 } = getState().web3;
@@ -167,11 +183,13 @@ export const loadTokens = () => {
       }
     });
     const { web3 } = getState().web3;
+    const { accounts } = getState().accounts;
     tokenAddresses.map(async address => {
       const tokenContract = new web3.eth.Contract(MockToken.abi, address);
       const symbol = await tokenContract.methods.symbol().call();
       const name = await tokenContract.methods.name().call();
       dispatch(getTokenRegistry(address));
+      dispatch(fetchUserStuff(address, accounts[0]));
       dispatch(loadAllOffers(address));
       dispatch({
         type: "FETCHED_TOKEN",
@@ -183,5 +201,34 @@ export const loadTokens = () => {
         }
       });
     });
+  };
+};
+
+export const fetchUserOptions = userAddress => {
+  return async (dispatch, getState) => {
+    const { web3 } = getState().web3;
+    const { optionFactory, token } = getState().contracts;
+
+    const registryAddress = await optionFactory.methods
+      .tokenToRegistry(token._address)
+      .call();
+    const registry = new web3.eth.Contract(OpziaRegistry.abi, registryAddress);
+    const length = await registry.methods
+      .getUserOffersLength(userAddress)
+      .call();
+    for (let i = 0; i < length; i++) {
+      let offerIndex = await registry.methods
+        .userToOffers(userAddress, i)
+        .call();
+      let offer = await registry.methods.offers(offerIndex).call();
+
+      dispatch({
+        type: "FETCHED_USER_OFFER",
+        payload: {
+          index: i,
+          offer
+        }
+      });
+    }
   };
 };

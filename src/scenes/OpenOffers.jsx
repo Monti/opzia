@@ -36,11 +36,9 @@ const columns = [
 ];
 
 class OpenOffers extends Component {
-  componentDidMount() {
-    this.props.fetchUserOptions(this.props.accounts[0]);
-  }
+
   render() {
-    const { web3, user } = this.props;
+    const { web3, user, tokens } = this.props;
     const offers = user.offers;
     return (
       <Container>
@@ -48,7 +46,8 @@ class OpenOffers extends Component {
           columns={columns}
           dataSource={offers}
           render={source => {
-            const curr =source.ethOrToken? "GO" :"MCK";
+            const token = tokens.find(token=> token.address==source.tokenAddress)
+            const curr =source.ethOrToken? "GO" : token.symbol;
             const days = source.duration/(60*60*24);
             return (
               <tr key={_.uniqueId()}>
@@ -73,13 +72,14 @@ const mapDispatchToProps = dispatch => {
 };
 
 const mapStateToProps = state => {
-  const { accounts, exchanges, contracts, web3, user } = state;
+  const { accounts, exchanges, contracts, web3, user, tokens } = state;
   return {
     accounts: accounts.accounts,
     exchanges,
     contracts,
     web3: web3.web3,
-    user
+    user,
+    tokens
   };
 };
 
