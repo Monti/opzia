@@ -83,9 +83,10 @@ export const getTokenExchange = tokenAddress => {
 
 export const getTokenRegistry = tokenAddress => {
   return async (dispatch, getState) => {
+    
     const { web3 } = getState().web3;
     const { optionFactory } = getState().contracts;
-
+    
     const registryAddress = await optionFactory.methods
       .tokenToRegistry(tokenAddress)
       .call();
@@ -170,7 +171,7 @@ export const loadTokens = () => {
       const tokenContract = new web3.eth.Contract(MockToken.abi, address);
       const symbol = await tokenContract.methods.symbol().call();
       const name = await tokenContract.methods.name().call();
-
+      dispatch(getTokenRegistry(address));
       dispatch({
         type: "FETCHED_TOKEN",
         payload: {

@@ -47,34 +47,39 @@ class OpenOffers extends Component {
 
   takeOffer = async (offerIndex, assetsToTake, fees, goOrToken, symbol) => {
     const { tokens, registries, web3, accounts } = this.props;
-    const token = tokens.find(token => token.symbol == symbol);
-    const registry = registries[token.address];
+    const tokenObj = tokens.find(token => token.symbol == symbol);
+    const token = tokenObj.contract;
+
+    const registry = registries[tokenObj.address];
     if (goOrToken) {
       // Handle go locks
       const approveTx = token.methods.approve(
         registry._address,
-        web3.utils.toWei(fees * 2)
+        web3.utils.toWei((fees * 2).toString())
       );
       const approveGas = await approveTx.estimateGas({ from: accounts[0] });
-      await approveTx.estimateGas({ from: accounts[0], gas: approveGas * 2 });
+      console.log(approveGas);
+      await approveTx.send({ from: accounts[0], gas: approveGas * 2 });
 
       const tx = registry.methods.lockEthAtPrice(
-        web3.utils.toWei(assetsToTake, offerIndex)
+        web3.utils.toWei(assetsToTake.toString()),
+        offerIndex
       );
       const gas = tx.estimateGas({ from: accounts[0] });
       await tx.send({ from: accounts[0], gas: gas * 2 });
     } else {
       // Handle token locks
       const tx = registry.methods.lockTokenAtPrice(
-        web3.utils.toWei(assetsToTake, offerIndex)
+        web3.utils.toWei(assetsToTake.toString()),
+        offerIndex
       );
       const gas = await tx.estimateGas({
         from: accounts[0],
-        value: web3.utils.toWei(fees * 2)
+        value: web3.utils.toWei((fees * 2).toString())
       });
       await tx.send({
         from: accounts[0],
-        value: web3.utils.toWei(fees * 2),
+        value: web3.utils.toWei((fees * 2).toString()),
         gas: gas * 2
       });
     }
@@ -119,7 +124,7 @@ class OpenOffers extends Component {
                         toAmount,
                         fees,
                         source.ethOrToken,
-                        to =="GO"? from: to
+                        to == "GO" ? from : to
                       )
                     }
                   >
