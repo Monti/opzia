@@ -45,8 +45,9 @@ class App extends Component {
     // this.pollAccounts();
   }
 
-  componentWillReceiveProps({ web3, lottery }) {
-    this.setState({ web3, lottery });
+  componentWillReceiveProps({ web3 }) {
+    console.log(web3)
+    this.setState({ web3 });
   }
 
   pollAccounts() {
