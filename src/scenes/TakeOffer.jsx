@@ -44,6 +44,42 @@ class OpenOffers extends Component {
   componentDidMount() {
     this.props.fetchUserOptions(this.props.accounts[0]);
   }
+
+  takeOffer = async (offerIndex, assetsToTake, fees, goOrToken, symbol) => {
+    const { tokens, registries, web3, accounts } = this.props;
+    const token = tokens.find(token => token.symbol == symbol);
+    const registry = registries[token.address];
+    if (goOrToken) {
+      // Handle go locks
+      const approveTx = token.methods.approve(
+        registry._address,
+        web3.utils.toWei(fees * 2)
+      );
+      const approveGas = await approveTx.estimateGas({ from: accounts[0] });
+      await approveTx.estimateGas({ from: accounts[0], gas: approveGas * 2 });
+
+      const tx = registry.methods.lockEthAtPrice(
+        web3.utils.toWei(assetsToTake, offerIndex)
+      );
+      const gas = tx.estimateGas({ from: accounts[0] });
+      await tx.send({ from: accounts[0], gas: gas * 2 });
+    } else {
+      // Handle token locks
+      const tx = registry.methods.lockTokenAtPrice(
+        web3.utils.toWei(assetsToTake, offerIndex)
+      );
+      const gas = await tx.estimateGas({
+        from: accounts[0],
+        value: web3.utils.toWei(fees * 2)
+      });
+      await tx.send({
+        from: accounts[0],
+        value: web3.utils.toWei(fees * 2),
+        gas: gas * 2
+      });
+    }
+  };
+
   render() {
     const { web3, rawOffers, match } = this.props;
     const { from, to, fromAmount, toAmount } = match.params;
@@ -67,7 +103,7 @@ class OpenOffers extends Component {
             const fees =
               (source.volatility * +source.fee * +fromAmount) / 1000000 ** 2;
             return (
-              <tr key={source.fee}>
+              <tr key={source.index}>
                 <td>{curr}</td>
                 <td>{`${source.volatility / 1000} %`}</td>
                 <td>{`${fees} ${from}`}</td>
@@ -76,7 +112,19 @@ class OpenOffers extends Component {
                   source.maxAssetsLocked
                 )} ${curr}`}</td>
                 <td>
-                  <Button>Take</Button>
+                  <Button
+                    onClick={() =>
+                      this.takeOffer(
+                        source.index,
+                        toAmount,
+                        fees,
+                        source.ethOrToken
+                      )
+                    }
+                  >
+                    {" "}
+                    Take
+                  </Button>
                 </td>
               </tr>
             );
@@ -94,13 +142,23 @@ const mapDispatchToProps = dispatch => {
 };
 
 const mapStateToProps = state => {
-  const { accounts, exchanges, contracts, web3, offers } = state;
+  const {
+    accounts,
+    exchanges,
+    contracts,
+    web3,
+    offers,
+    registries,
+    tokens
+  } = state;
   return {
     accounts: accounts.accounts,
     exchanges,
     contracts,
     web3: web3.web3,
-    rawOffers: offers
+    rawOffers: offers,
+    registries,
+    tokens
   };
 };
 

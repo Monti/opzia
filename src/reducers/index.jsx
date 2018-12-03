@@ -5,8 +5,10 @@ import web3 from './web3';
 import accounts from './accounts';
 import contracts from './contracts';
 import exchanges from './exchanges';
+import registries from './registries';
 import user from './user';
 import offers from './offers';
+import tokens from './tokens';
 
 export default (history) => combineReducers({
   router: connectRouter(history),
@@ -15,5 +17,7 @@ export default (history) => combineReducers({
   contracts,
   exchanges,
   user,
-  offers
+  offers,
+  registries,
+  tokens
 });

@@ -117,15 +117,8 @@ class Home extends Component {
   };
 
   render() {
-    const { contracts, accounts, exchanges } = this.props;
-    const tokens = [
-      { name: "Go", symbol: "GO", address: null },
-      {
-        name: "Mock",
-        symbol: "MCK",
-        address: contracts.token && contracts.token._address
-      }
-    ];
+    const { tokens} = this.props;
+    
     const { fromAmount, toAmount, fromToken, toToken } = this.state;
     return (
       <Container>
@@ -144,12 +137,13 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => {
-  const { accounts, exchanges, contracts, web3 } = state;
+  const { accounts, exchanges, contracts, web3, tokens } = state;
   return {
     accounts: accounts.accounts,
     exchanges,
     contracts,
-    web3: web3.web3
+    web3:  web3.web3,
+    tokens
   };
 };
 
