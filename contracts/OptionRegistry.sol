@@ -87,13 +87,13 @@ contract OptionRegistry{// An option registry for a TOKEN/ETH market
     @param offerIndex index of offer facilitating the lock
      */
 
-    function lockEtherAtPrice(uint amountToLock, uint offerIndex) public{
+    function lockEthAtPrice(uint amountToLock, uint offerIndex) public{
         OptionOffer storage offer = offers[offerIndex];
-        require(amountToLock > userEthBalances[offer.owner], "Not enough ETH");
+        require(amountToLock < userEthBalances[offer.owner], "Not enough ETH");
         require(offer.ethOrToken, "Not an ETH offer");
         require(offer.maxAssetsLocked > amountToLock.add(offer.assetsLocked), "Too much to lock");
-        uint tokensUsed = offer.exchange.getTokenToEthOutput(token, amountToLock);
-        uint feeToTake = tokensUsed.mul(offer.volatility).mul(offer.fee);
+        uint tokensUsed = offer.exchange.getTokenToEthOutputPrice(amountToLock);
+        uint feeToTake = tokensUsed.mul(offer.volatility).mul(offer.fee).div(1000000 ** 2);
 
         PriceLock memory newLock;
         newLock.offerIndex = offerIndex;
@@ -120,11 +120,11 @@ contract OptionRegistry{// An option registry for a TOKEN/ETH market
 
     function lockTokenAtPrice(uint amountToLock, uint offerIndex) public payable{
         OptionOffer storage offer = offers[offerIndex];
-        require(amountToLock > userTokenBalances[offer.owner], "Not enough Token");
+        require(amountToLock < userTokenBalances[offer.owner], "Not enough Token");
         require(!offer.ethOrToken, "Not a token offer");
         require(offer.maxAssetsLocked > amountToLock.add(offer.assetsLocked), "Too much to lock");
-        uint ethUsed = offer.exchange.getEthToTokenOutput(token, amountToLock);
-        uint feeToTake = ethUsed.mul(offer.volatility).mul(offer.fee);
+        uint ethUsed = offer.exchange.getEthToTokenOutputPrice(amountToLock);
+        uint feeToTake = ethUsed.mul(offer.volatility).mul(offer.fee).div(1000000 ** 2);
 
         PriceLock memory newLock;
         newLock.offerIndex = offerIndex;

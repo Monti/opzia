@@ -74,7 +74,9 @@ module.exports = async function(callback) {
       );
       if (registryAddress == NULL_ADDRESS) {
         await optionFactory.addFactory(mockToken.address);
-        registryAddress = await optionFactory.tokenToRegistry.call(mockToken.address);
+        registryAddress = await optionFactory.tokenToRegistry.call(
+          mockToken.address
+        );
         mockTokenRegistry = await OptionRegistry.at(registryAddress);
         console.log("Created new registry");
         console.log("ADDRESS:", mockTokenRegistry.address);
@@ -85,6 +87,7 @@ module.exports = async function(callback) {
       }
 
       // Create ether option offer
+      let offer = null;
       if (
         (await mockTokenRegistry.getUserOffersLength.call(accounts[0])) == 0
       ) {
@@ -102,16 +105,37 @@ module.exports = async function(callback) {
           tokenExchange.address,
           { from: accounts[0], value: web3.utils.toWei("5") }
         );
-        
-        let offer = await mockTokenRegistry.offers.call(0);
-        console.log(offer);
 
-      }
-      else{
-        console.log("already have first offer")
-        let offer = await mockTokenRegistry.offers.call(0);
+        offer = await mockTokenRegistry.offers.call(0);
+        console.log(offer);
+      } else {
+        console.log("already have first offer");
+        offer = await mockTokenRegistry.offers.call(0);
         console.log(offer);
       }
+
+      // Create ether price lock
+      if ((await mockTokenRegistry.getUserLocksLength.call(accounts[0])) == 0) {
+        console.log("creating new lock");
+        const amountToLock = web3.utils.toWei("1");
+        const feeToApprove = web3.utils.toWei("1000");
+
+        await mockToken.approve(mockTokenRegistry.address, feeToApprove, {
+          from: accounts[0]
+        });
+
+        await mockTokenRegistry.lockEthAtPrice(amountToLock, 0, {
+          from: accounts[0]
+        });
+
+        let lock = await mockTokenRegistry.priceLocks.call(0);
+        console.log(lock);
+      } else {
+        console.log("already have first lock");
+        let lock = await mockTokenRegistry.priceLock.call(0);
+        console.log(lock);
+      }
+
       callback();
     })
     .catch(err => {

@@ -17,13 +17,13 @@ interface IExchange{
         returns (uint wrostCaseRetrun);
 
 
-    function getTokenToEthInput(address src, uint srcAmount) external view returns(uint);
+    function getTokenToEthInputPrice(uint srcAmount) external view returns(uint);
 
-    function getTokenToEthOutput(address src, uint destAmount) external view returns(uint);
+    function getTokenToEthOutputPrice(uint destAmount) external view returns(uint);
 
-    function getEthToTokenInput(address dest, uint srcAmount) external view returns(uint);
+    function getEthToTokenInputPrice(uint srcAmount) external view returns(uint);
 
-    function getEthToTokenOutput(address dest, uint destAmount) external view returns(uint);
+    function getEthToTokenOutputPrice(uint destAmount) external view returns(uint);
 
 
      /**
