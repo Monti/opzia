@@ -72,12 +72,18 @@ class Add extends Component {
     super(props);
 
     this.state = {
-      amountToken: null,
-      selectedToken: null,
+      amountToken: '',
+      selectedToken: '',
+      amount: '',
+      volatility: '',
+      fee: '',
+      duration: '',
+      wait: '',
     };
 
     this.handleAmountClick = this.handleAmountClick.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleAmountClick(token) {
@@ -88,11 +94,29 @@ class Add extends Component {
     this.setState({ selectedToken: token });
   }
 
+  handleSubmit(e) {
+    e.preventDefault();
+    console.log(this.state);
+  }
+
+  onChange(type, amount) {
+    this.setState({ [type]: amount });
+  }
+
   render() { 
-    const { amountToken, selectedToken } = this.state;
+    const {
+      amountToken,
+      selectedToken,
+      volatility,
+      amount,
+      fee,
+      wait,
+      duration,
+    } = this.state;
+
     return (
       <Container>
-        <form>
+        <form onSubmit={this.handleSubmit}>
           <InputGroup>
             <TradeList style={{ marginRight: '20px'}}>
               {tokens.map(item => (
@@ -104,26 +128,46 @@ class Add extends Component {
                 />
               ))}
             </TradeList>
-            <TextInput addon={amountToken} placeholder="Amount" />
+            <TextInput
+              value={amount}
+              onChange={e => this.onChange("amount", e.target.value)}
+              addon={amountToken}
+              placeholder="Amount" />
           </InputGroup>
           <InputGroup>
             <InputItem>
               <label>Volatility</label>
-              <TextInput noAddon placeholder="Amount" />
+              <TextInput
+                noAddon
+                value={volatility}
+                onChange={e => this.onChange("volatility", e.target.value)}
+                placeholder="Amount" />
             </InputItem>
             <InputItem>
               <label>Fee</label>
-              <TextInput noAddon placeholder="Amount" />
+              <TextInput
+                noAddon
+                value={fee}
+                onChange={e => this.onChange("fee", e.target.value)}
+                placeholder="Amount" />
             </InputItem>
             <InputItem>
               <label>Duration</label>
-              <TextInput noAddon placeholder="Amount" />
+              <TextInput
+                noAddon
+                value={duration}
+                onChange={e => this.onChange("duration", e.target.value)}
+                placeholder="Amount" />
             </InputItem>
           </InputGroup>
           <InputGroup>
             <InputItem style={{ flex: 1, marginRight: '20px' }}>
               <label>Wait Time</label>
-              <TextInput placeholder="Amount" noAddon />
+              <TextInput
+                noAddon
+                value={wait}
+                onChange={e => this.onChange("wait", e.target.value)}
+                placeholder="Amount" />
             </InputItem>
             <InputItem style={{ display: 'flex' }}>
               <TradeList>
@@ -140,7 +184,7 @@ class Add extends Component {
           </InputGroup>
           <Footer>
             <div>Existing State: 0</div>
-            <Button>Add Option</Button>
+            <Button type="submit" onClick={() => {}}>Add Option</Button>
           </Footer>
         </form>
       </Container>
