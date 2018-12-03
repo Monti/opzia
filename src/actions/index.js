@@ -14,6 +14,7 @@ export const loadWeb3 = () => {
       payload: getWeb3()
     }).then(() => {
       dispatch(getAccounts());
+      dispatch(loadTokens());
       dispatch(loadContracts()).then(() => {
         dispatch(loadAllOffers()); // So dirty
       });
@@ -80,6 +81,25 @@ export const getTokenExchange = tokenAddress => {
   };
 };
 
+export const getTokenRegistry = tokenAddress => {
+  return async (dispatch, getState) => {
+    const { web3 } = getState().web3;
+    const { optionFactory } = getState().contracts;
+
+    const registryAddress = await optionFactory.methods
+      .tokenToRegistry(tokenAddress)
+      .call();
+    const registry = new web3.eth.Contract(OpziaRegistry.abi, registryAddress);
+    return dispatch({
+      type: "FETCHED_TOKEN_REGISTRY",
+      payload: {
+        tokenAddress,
+        registry
+      }
+    });
+  };
+};
+
 export const fetchUserOptions = userAddress => {
   return async (dispatch, getState) => {
     const { web3 } = getState().web3;
@@ -130,5 +150,36 @@ export const loadAllOffers = () => {
         }
       });
     }
+  };
+};
+
+const tokenAddresses = [MockToken.networks[5777].address];
+export const loadTokens = () => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: "FETCHED_TOKEN",
+      payload: {
+        contract: null,
+        name: "Go",
+        symbol: "GO",
+        address: null
+      }
+    });
+    const { web3 } = getState().web3;
+    tokenAddresses.map(async address => {
+      const tokenContract = new web3.eth.Contract(MockToken.abi, address);
+      const symbol = await tokenContract.methods.symbol().call();
+      const name = await tokenContract.methods.name().call();
+
+      dispatch({
+        type: "FETCHED_TOKEN",
+        payload: {
+          contract: tokenContract,
+          name,
+          symbol,
+          address: tokenAddresses
+        }
+      });
+    });
   };
 };
