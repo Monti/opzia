@@ -95,7 +95,7 @@ module.exports = async function(callback) {
         const volatility = 10 * 1000;
         const fee = 10 * 1000;
         const duration = 60 * 60 * 24 * 3;
-        const minDuration = duration / 3;
+        const minDuration = 1;
         const maxAssets = web3.utils.toWei("3");
 
         await mockTokenRegistry.addOffer(
@@ -190,4 +190,5 @@ module.exports = async function(callback) {
     .catch(err => {
       callback(err);
     });
+
 };
