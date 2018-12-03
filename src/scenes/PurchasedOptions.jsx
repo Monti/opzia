@@ -43,7 +43,10 @@ class PurchasedOptions extends Component {
     const registry = registries[token.address];
     const value = givenAmount;
     if (isGo) {
-      const approveTx = token.contract.methods.approve(registry._address, value);
+      const approveTx = token.contract.methods.approve(
+        registry._address,
+        value
+      );
       const approveGas = await approveTx.estimateGas({ from: accounts[0] });
       await approveTx.send({ from: accounts[0], gas: approveGas * 2 });
 
@@ -82,6 +85,8 @@ class PurchasedOptions extends Component {
             if ((days < 0, source.ethAmount == 0)) {
               return;
             }
+            const inWaiting =
+              +source.creation + +offer.minDuration - Date.now() / 1000 > 0;
             return (
               <tr key={_.uniqueId()}>
                 <td>{curr}</td>
@@ -95,6 +100,8 @@ class PurchasedOptions extends Component {
                 <td>{`${days} Days`}</td>
                 <td>
                   <Button
+                    disabled={inWaiting}
+                    secondary={inWaiting}
                     onClick={() =>
                       this.callOption(
                         token,
@@ -104,8 +111,7 @@ class PurchasedOptions extends Component {
                       )
                     }
                   >
-                    {" "}
-                    Call
+                    {inWaiting ? "In Waiting":"Call"}
                   </Button>
                 </td>
               </tr>
