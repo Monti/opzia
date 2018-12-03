@@ -3,8 +3,9 @@ export default function(state = {}, action) {
 
   switch (type) {
     case "FETCHED_TOKEN_REGISTRY":
+      console.log("SS");
       let newState = { ...state };
-      newState[payload.tokenAddress] = payload.registry
+      newState[payload.tokenAddress] = payload.registry;
       return newState;
     default:
       return state;

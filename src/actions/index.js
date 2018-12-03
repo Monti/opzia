@@ -15,9 +15,7 @@ export const loadWeb3 = () => {
     }).then(() => {
       dispatch(getAccounts());
       dispatch(loadTokens());
-      dispatch(loadContracts()).then(() => {
-        dispatch(loadAllOffers()); // So dirty
-      });
+      dispatch(loadContracts())
     });
   };
 };
@@ -130,13 +128,14 @@ export const fetchUserOptions = userAddress => {
   };
 };
 
-export const loadAllOffers = () => {
+export const loadAllOffers = (tokenAddress) => {
   return async (dispatch, getState) => {
+    console.log(tokenAddress);
     const { web3 } = getState().web3;
-    const { optionFactory, token } = getState().contracts;
+    const { optionFactory } = getState().contracts;
 
     const registryAddress = await optionFactory.methods
-      .tokenToRegistry(token._address)
+      .tokenToRegistry(tokenAddress)
       .call();
     const registry = new web3.eth.Contract(OpziaRegistry.abi, registryAddress);
     const length = await registry.methods.getOffersLength().call();
@@ -146,6 +145,7 @@ export const loadAllOffers = () => {
       dispatch({
         type: "FETCHED_OFFER",
         payload: {
+          tokenAddress,
           index: i,
           offer
         }
@@ -172,6 +172,7 @@ export const loadTokens = () => {
       const symbol = await tokenContract.methods.symbol().call();
       const name = await tokenContract.methods.name().call();
       dispatch(getTokenRegistry(address));
+      dispatch(loadAllOffers(address));
       dispatch({
         type: "FETCHED_TOKEN",
         payload: {
