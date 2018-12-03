@@ -1,0 +1,45 @@
+[{
+    "name": "Bitcoin",
+    "symbol": "btc"
+  },
+  {
+    "name": "Ethereum",
+    "symbol": "eth"
+  },
+  {
+    "name": "VeChain",
+    "symbol": "vet"
+  },
+  {
+    "name": "GoChain",
+    "symbol": "go"
+  },
+  {
+    "name": "XRP",
+    "symbol": "xrp"
+  },
+  {
+    "name": "Stellar",
+    "symbol": "xlm"
+  },
+  {
+    "name": "Bitcoin Cash",
+    "symbol": "bch"
+  },
+  {
+    "name": "EOS",
+    "symbol": "eos"
+  },
+  {
+    "name": "Litecoin",
+    "symbol": "ltc"
+  },
+  {
+    "name": "Cardano",
+    "symbol": "ada"
+  },
+  {
+    "name": "Monero",
+    "symbol": "xmr"
+  }
+]
