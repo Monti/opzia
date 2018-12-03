@@ -4,7 +4,7 @@ import TradeItem from "../TradeItem";
 import Conversion from "../Conversion";
 
 const Wrapper = styled.div`
-  margin: 50px 0;
+  margin-bottom: 50px;
 `;
 
 const TradeList = styled.div`
