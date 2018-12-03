@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Monti/opzia#readme",
   "dependencies": {
+    "bignumber.js": "^8.0.1",
     "openzeppelin-solidity": "^2.0.0"
   }
 }
