@@ -1,15 +1,24 @@
 # Opzia
 Opzia, a trustless pereptual option
 
+## Motivation
+
+In the most general sense, an option is the right to purchase and asset at a certain predetermined price.
+Additional conditions often apply, such as expiry after which option is no longer valid or minmal wait time before an option can be called after purchase.
+
+The underlying process in option writing/buying is heaving two sides bet head to head. One is expecting low volatility and the other expecting high one.
+
+In our side, the passive option writer picks a few parameters such as volatility, fee and duration and puts assets in the opzia smart contract. This constitutes an option offer.
+
+A buyer can then pay a fee to purchase the option and lock the assets in the smart contract. The buyer can then call his purchased option and pay the locked price and exchange the assets with the contract.
+
+Expired options get automatically removed by fishermen/watchers.
+
+
 ## Contract Description
-OptionOffer 
+Following is an outline of some of the key functions of the contract
+
 ```solidity
-pragma solidity ^0.4.24;
-
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "./Exchange/IExchange.sol";
-
 contract OptionRegistry{// An option registry for a TOKEN/ETH market
     using SafeMath for uint;
     using SafeMath for uint32;
